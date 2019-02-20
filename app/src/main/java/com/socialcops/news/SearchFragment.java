@@ -1,18 +1,24 @@
 package com.socialcops.news;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -23,14 +29,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class NewsFragment extends Fragment {
+public class SearchFragment extends Fragment {
 
     String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535"; // ### YOUE NEWS API HERE ###
     ListView listNews;
     ProgressBar loader;
+    EditText searchView;
+    SearchNewsAdapter adapter;
     View v;
     ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
-    static final String NEWS_SOURCE="name";
     static final String KEY_AUTHOR = "author";
     static final String KEY_TITLE = "title";
     static final String KEY_DESCRIPTION = "description";
@@ -46,18 +53,74 @@ public class NewsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.fragment_news, container, false);
-        listNews = (ListView) v.findViewById(R.id.listNews);
-        loader = (ProgressBar) v.findViewById(R.id.nloader);
+        v = inflater.inflate(R.layout.fragment_search, container, false);
+        listNews = (ListView) v.findViewById(R.id.searchNews);
+        loader = (ProgressBar) v.findViewById(R.id.sloader);
         listNews.setEmptyView(loader);
+        searchView =getActivity().findViewById(R.id.searchText);
+        if(searchView.getText().toString()!=null&&!searchView.getText().toString().equals("")){
+            String s[]=searchView.getText().toString().split(" ");
+            String s1="";
+            int i=0;
+            for(String x:s){
+                if(i==0) {
+                    s1 += x;
+                    i++;
+                }
+                else
+                    s1=s1+"+"+x;
+            }
+            Variables.SEARCH=s1;
+        }
+        else{
+            Variables.SEARCH="india";
+        }
+        searchView.setOnKeyListener(new View.OnKeyListener() {
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+        // If the event is a key-down event on the "enter" button
+        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+           (keyCode == KeyEvent.KEYCODE_ENTER)) {
+            if(Function.isNetworkAvailable(container.getContext()))
+                {
+                    if(searchView.getText().toString()!=null&&!searchView.getText().toString().equals("")){
+                       String s[]=searchView.getText().toString().split(" ");
+                        String s1="";
+                        int i=0;
+                        for(String x:s){
+                            if(i==0) {
+                                s1 += x;
+                                i++;
+                            }
+                            else
+                                s1=s1+"+"+x;
+                        }
+                        Variables.SEARCH=s1;
+                        System.out.println("Thisis line under this");
+                    }
+                    else{
+                        Variables.SEARCH="india";
+                    }
+                    DownloadNews newsTask = new DownloadNews();
+                    newsTask.execute();
+                    FragmentTransaction ftr = getFragmentManager().beginTransaction();
+                    ftr.detach(SearchFragment.this).attach(SearchFragment.this).commit();
+                }else{
+                    Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+                }
+          return true;
+        }
+        return false;
+        }
+    });
+        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
 
-
-//
-
-
+            }
+        });
         if(Function.isNetworkAvailable(container.getContext()))
         {
             DownloadNews newsTask = new DownloadNews();
@@ -66,9 +129,15 @@ public class NewsFragment extends Fragment {
             Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
         }
 
+
         return v;
     }
-
+    private void showInputMethod(View view) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(view, 0);
+        }
+    }
 
     class DownloadNews extends AsyncTask<String, Void, String> {
         @Override
@@ -80,7 +149,7 @@ public class NewsFragment extends Fragment {
             String xml = "";
 
             String urlParameters = "";
-            xml = Function.excuteGet("https://newsapi.org/v2/everything?q=india&apiKey="+API_KEY, urlParameters);
+            xml = Function.excuteGet("https://newsapi.org/v2/everything?q="+Variables.SEARCH+"&apiKey="+API_KEY, urlParameters);
             return  xml;
         }
         @Override
@@ -91,6 +160,7 @@ public class NewsFragment extends Fragment {
                 try {
                     JSONObject jsonResponse = new JSONObject(xml);
                     JSONArray jsonArray = jsonResponse.optJSONArray("articles");
+                    System.out.println("Hello "+Variables.SEARCH);
                     dataList.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -107,7 +177,7 @@ public class NewsFragment extends Fragment {
                     Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
                 }
 
-                ListNewsAdapter adapter = new ListNewsAdapter(getActivity(), dataList);
+                 adapter = new SearchNewsAdapter(getActivity(), dataList);
                 listNews.setAdapter(adapter);
 
                 listNews.setOnItemClickListener(new AdapterView.OnItemClickListener() {

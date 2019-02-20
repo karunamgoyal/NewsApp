@@ -10,11 +10,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextMessage;
+    private EditText searchView;
     private ViewPager viewPager;
     private ViewPageAdapter viewPageAdapter;
     MenuItem prevMenuItem;
@@ -25,12 +28,18 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    searchView= findViewById(R.id.searchText);
+                    searchView.setVisibility(EditText.GONE);
                     viewPager.setCurrentItem(0);
                     return true;
                 case R.id.navigation_dashboard:
+                    searchView= findViewById(R.id.searchText);
+                    searchView.setVisibility(EditText.VISIBLE);
                     viewPager.setCurrentItem(1);
                     return true;
                 case R.id.navigation_notifications:
+                    searchView= findViewById(R.id.searchText);
+                    searchView.setVisibility(EditText.GONE);
                     viewPager.setCurrentItem(2);
                     return true;
             }
@@ -42,8 +51,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbarsearch);
         setSupportActionBar(toolbar);
+        searchView= findViewById(R.id.searchText);
+        searchView.setVisibility(EditText.GONE);
         mTextMessage = (TextView) findViewById(R.id.message);
         final BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -51,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         viewPageAdapter=new ViewPageAdapter(getSupportFragmentManager());
         //Add fragment
         viewPageAdapter.AddFragment(new NewsFragment(),"");
-        viewPageAdapter.AddFragment(new NewsFragment(),"");
+        viewPageAdapter.AddFragment(new SearchFragment(),"");
         viewPageAdapter.AddFragment(new NewsFragment(),"");
         viewPager.setAdapter(viewPageAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -68,6 +79,22 @@ public class MainActivity extends AppCompatActivity {
                     navigation.getMenu().getItem(0).setChecked(false);
                 navigation.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = navigation.getMenu().getItem(position);
+                switch (position){
+                    case 0:
+                        searchView= findViewById(R.id.searchText);
+                        searchView.setVisibility(EditText.GONE);
+                        break;
+                    case 1:
+                        searchView= findViewById(R.id.searchText);
+                        searchView.setVisibility(EditText.VISIBLE);
+                        break;
+                    case 2:
+                        searchView= findViewById(R.id.searchText);
+                        searchView.setVisibility(EditText.GONE);
+
+                        break;
+
+                }
             }
 
             @Override

@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
-
+import java.util.TimeZone;
 
 
 class ListNewsAdapter extends BaseAdapter {
@@ -42,8 +44,8 @@ class ListNewsAdapter extends BaseAdapter {
             holder.galleryImage = (ImageView) convertView.findViewById(R.id.newsimage);
 
             holder.title = (TextView) convertView.findViewById(R.id.headline);
-
-           // holder.time = (TextView) convertView.findViewById(R.id.time);
+          //  holder.source = (TextView) convertView.findViewById(R.id.newssource);
+            holder.time = (TextView) convertView.findViewById(R.id.time);
             convertView.setTag(holder);
         } else {
             holder = (ListNewsViewHolder) convertView.getTag();
@@ -52,15 +54,16 @@ class ListNewsAdapter extends BaseAdapter {
 
         holder.title.setId(position);
 
-//        holder.time.setId(position);
-
+        holder.time.setId(position);
+       // holder.source.setId(position);
         HashMap<String, String> song;
         song = data.get(position);
 
         try{
-
+            String arr[]=song.get(NewsFragment.KEY_PUBLISHEDAT).split("T");
             holder.title.setText(song.get(NewsFragment.KEY_TITLE));
-           // holder.time.setText(song.get(NewsFragment.KEY_PUBLISHEDAT));
+            holder.time.setText(arr[0]);
+           // holder.time.setText(song.get(NewsFragment.NEWS_SOURCE));
             DisplayMetrics displaymetrics = new DisplayMetrics();
             activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
@@ -87,5 +90,6 @@ class ListNewsAdapter extends BaseAdapter {
 
 class ListNewsViewHolder {
     ImageView galleryImage;
-    TextView  title, time;
+    TextView  title, time,source;
+
 }
