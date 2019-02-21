@@ -25,6 +25,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -37,6 +43,11 @@ public class SearchFragment extends Fragment {
     EditText searchView;
     SearchNewsAdapter adapter;
     View v;
+    String filename = "SocialCopsNewsAPPSearch";
+    FileOutputStream outputStream;
+    FileInputStream inputStream;
+    ObjectInputStream objectInputStream;
+    ObjectOutputStream objectOutputStream;
     ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
     static final String KEY_AUTHOR = "author";
     static final String KEY_TITLE = "title";
@@ -44,6 +55,7 @@ public class SearchFragment extends Fragment {
     static final String KEY_URL = "url";
     static final String KEY_URLTOIMAGE = "urlToImage";
     static final String KEY_PUBLISHEDAT = "publishedAt";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -60,78 +72,108 @@ public class SearchFragment extends Fragment {
         listNews = (ListView) v.findViewById(R.id.searchNews);
         loader = (ProgressBar) v.findViewById(R.id.sloader);
         listNews.setEmptyView(loader);
-        searchView =getActivity().findViewById(R.id.searchText);
-        if(searchView.getText().toString()!=null&&!searchView.getText().toString().equals("")){
-            String s[]=searchView.getText().toString().split(" ");
-            String s1="";
-            int i=0;
-            for(String x:s){
-                if(i==0) {
+        searchView = getActivity().findViewById(R.id.searchText);
+        if (searchView.getText().toString() != null && !searchView.getText().toString().equals("")) {
+            String s[] = searchView.getText().toString().split(" ");
+            String s1 = "";
+            int i = 0;
+            for (String x : s) {
+                if (i == 0) {
                     s1 += x;
                     i++;
-                }
-                else
-                    s1=s1+"+"+x;
+                } else
+                    s1 = s1 + "+" + x;
             }
-            Variables.SEARCH=s1;
+            Variables.SEARCH = s1;
+        } else {
+            Variables.SEARCH = "india";
         }
-        else{
-            Variables.SEARCH="india";
-        }
+
         searchView.setOnKeyListener(new View.OnKeyListener() {
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-        // If the event is a key-down event on the "enter" button
-        if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-           (keyCode == KeyEvent.KEYCODE_ENTER)) {
-            if(Function.isNetworkAvailable(container.getContext()))
-                {
-                    if(searchView.getText().toString()!=null&&!searchView.getText().toString().equals("")){
-                       String s[]=searchView.getText().toString().split(" ");
-                        String s1="";
-                        int i=0;
-                        for(String x:s){
-                            if(i==0) {
-                                s1 += x;
-                                i++;
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    if (Function.isNetworkAvailable(container.getContext())) {
+                        if (searchView.getText().toString() != null && !searchView.getText().toString().equals("")) {
+                            String s[] = searchView.getText().toString().split(" ");
+                            String s1 = "";
+                            int i = 0;
+                            for (String x : s) {
+                                if (i == 0) {
+                                    s1 += x;
+                                    i++;
+                                } else
+                                    s1 = s1 + "+" + x;
                             }
-                            else
-                                s1=s1+"+"+x;
+                            Variables.SEARCH = s1;
+                            System.out.println("Thisis line under this");
+                        } else {
+                            Variables.SEARCH = "india";
                         }
-                        Variables.SEARCH=s1;
-                        System.out.println("Thisis line under this");
+                        DownloadNews newsTask = new DownloadNews();
+                        newsTask.execute();
+                        FragmentTransaction ftr = getFragmentManager().beginTransaction();
+                        ftr.detach(SearchFragment.this).attach(SearchFragment.this).commit();
+                    } else {
+                        File file = new File(getContext().getFilesDir(), filename);
+                        ArrayList<HashMap<String, String>> dataList1 = null;
+                        try {
+                            inputStream = new FileInputStream(file);
+                            objectInputStream = new ObjectInputStream(inputStream);
+                            dataList1 = (ArrayList<HashMap<String, String>>) objectInputStream.readObject();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+
+                        if (dataList1 != null) {
+                            ListNewsAdapter adapter = new ListNewsAdapter(getActivity(), dataList1);
+                            listNews.setAdapter(adapter);
+                        } else {
+                            Toast.makeText(getContext(), "News Error Sorry For Inconvinience", Toast.LENGTH_LONG).show();
+                        }
                     }
-                    else{
-                        Variables.SEARCH="india";
-                    }
-                    DownloadNews newsTask = new DownloadNews();
-                    newsTask.execute();
-                    FragmentTransaction ftr = getFragmentManager().beginTransaction();
-                    ftr.detach(SearchFragment.this).attach(SearchFragment.this).commit();
-                }else{
-                    Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+                    return true;
                 }
-          return true;
-        }
-        return false;
-        }
-    });
+                return false;
+            }
+        });
         searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
             }
         });
-        if(Function.isNetworkAvailable(container.getContext()))
-        {
+        if (Function.isNetworkAvailable(container.getContext())) {
             DownloadNews newsTask = new DownloadNews();
             newsTask.execute();
-        }else{
-            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
+        } else {
+            File file = new File(getContext().getFilesDir(), filename);
+            ArrayList<HashMap<String, String>> dataList1 = null;
+            try {
+                inputStream = new FileInputStream(file);
+                objectInputStream = new ObjectInputStream(inputStream);
+                dataList1 = (ArrayList<HashMap<String, String>>) objectInputStream.readObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if (dataList1 != null) {
+                ListNewsAdapter adapter = new ListNewsAdapter(getActivity(), dataList1);
+                listNews.setAdapter(adapter);
+            } else {
+                Toast.makeText(getContext(), "News Error Sorry For Inconvinience", Toast.LENGTH_LONG).show();
+            }
         }
 
 
         return v;
     }
+
     private void showInputMethod(View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null) {
@@ -145,22 +187,24 @@ public class SearchFragment extends Fragment {
             super.onPreExecute();
 
         }
+
         protected String doInBackground(String... args) {
             String xml = "";
 
             String urlParameters = "";
-            xml = Function.excuteGet("https://newsapi.org/v2/everything?q="+Variables.SEARCH+"&apiKey="+API_KEY, urlParameters);
-            return  xml;
+            xml = Function.excuteGet("https://newsapi.org/v2/everything?q=" + Variables.SEARCH + "&apiKey=" + API_KEY, urlParameters);
+            return xml;
         }
+
         @Override
         protected void onPostExecute(String xml) {
 
-            if(xml.length()>10){ // Just checking if not empty
+            if (xml.length() > 10) { // Just checking if not empty
 
                 try {
                     JSONObject jsonResponse = new JSONObject(xml);
                     JSONArray jsonArray = jsonResponse.optJSONArray("articles");
-                    System.out.println("Hello "+Variables.SEARCH);
+                    System.out.println("Hello " + Variables.SEARCH);
                     dataList.clear();
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -176,28 +220,38 @@ public class SearchFragment extends Fragment {
                 } catch (JSONException e) {
                     Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
                 }
-
-                 adapter = new SearchNewsAdapter(getActivity(), dataList);
+                File file = new File(getContext().getFilesDir(), filename);
+                try {
+                    outputStream = new FileOutputStream(file);
+                    objectOutputStream = new ObjectOutputStream(outputStream);
+                    objectOutputStream.writeObject(dataList);
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                adapter = new SearchNewsAdapter(getActivity(), dataList);
                 listNews.setAdapter(adapter);
 
                 listNews.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
-                        Intent i = new Intent(getActivity(),DetailsActivity.class);
-                        i.putExtra("url", dataList.get(+position).get(KEY_URL));
+                        Intent i = new Intent(getActivity(), DetailsActivity.class);
+                        i.putExtra(KEY_URL, dataList.get(+position).get(KEY_URL));
+                        i.putExtra(KEY_AUTHOR, dataList.get(+position).get(KEY_AUTHOR));
+                        i.putExtra(KEY_TITLE, dataList.get(+position).get(KEY_TITLE));
+                        i.putExtra(KEY_DESCRIPTION, dataList.get(+position).get(KEY_DESCRIPTION));
+                        i.putExtra(KEY_PUBLISHEDAT, dataList.get(+position).get(KEY_PUBLISHEDAT));
                         startActivity(i);
                     }
                 });
 
-            }else{
+            } else {
                 Toast.makeText(getContext(), "No news found", Toast.LENGTH_SHORT).show();
             }
         }
 
 
-
     }
-
 
 
 }

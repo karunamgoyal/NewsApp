@@ -1,9 +1,17 @@
 package com.socialcops.news;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -11,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,18 +36,18 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     getSupportActionBar().setTitle("Headlines");
-                    searchView= findViewById(R.id.searchText);
+                    searchView = findViewById(R.id.searchText);
                     searchView.setVisibility(EditText.GONE);
                     viewPager.setCurrentItem(0);
                     return true;
                 case R.id.navigation_dashboard:
-                    searchView= findViewById(R.id.searchText);
+                    searchView = findViewById(R.id.searchText);
                     searchView.setVisibility(EditText.VISIBLE);
                     viewPager.setCurrentItem(1);
                     return true;
                 case R.id.navigation_notifications:
                     getSupportActionBar().setTitle("Saved");
-                    searchView= findViewById(R.id.searchText);
+                    searchView = findViewById(R.id.searchText);
                     searchView.setVisibility(EditText.GONE);
                     viewPager.setCurrentItem(2);
                     return true;
@@ -53,20 +60,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        toolbar =  findViewById(R.id.toolbarsearch);
+        toolbar = findViewById(R.id.toolbarsearch);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Headlines");
-        searchView= findViewById(R.id.searchText);
+        searchView = findViewById(R.id.searchText);
         searchView.setVisibility(EditText.GONE);
         mTextMessage = (TextView) findViewById(R.id.message);
         final BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        viewPager=findViewById(R.id.viewpager);
-        viewPageAdapter=new ViewPageAdapter(getSupportFragmentManager());
+        viewPager = findViewById(R.id.viewpager);
+        viewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
         //Add fragment
-        viewPageAdapter.AddFragment(new NewsFragment(),"");
-        viewPageAdapter.AddFragment(new SearchFragment(),"");
-        viewPageAdapter.AddFragment(new SavedFragment(),"");
+        viewPageAdapter.AddFragment(new NewsFragment(), "");
+        viewPageAdapter.AddFragment(new SearchFragment(), "");
+        viewPageAdapter.AddFragment(new SavedFragment(), "");
         viewPager.setAdapter(viewPageAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -82,19 +89,19 @@ public class MainActivity extends AppCompatActivity {
                     navigation.getMenu().getItem(0).setChecked(false);
                 navigation.getMenu().getItem(position).setChecked(true);
                 prevMenuItem = navigation.getMenu().getItem(position);
-                switch (position){
+                switch (position) {
                     case 0:
                         getSupportActionBar().setTitle("Headlines");
-                        searchView= findViewById(R.id.searchText);
+                        searchView = findViewById(R.id.searchText);
                         searchView.setVisibility(EditText.GONE);
                         break;
                     case 1:
-                        searchView= findViewById(R.id.searchText);
+                        searchView = findViewById(R.id.searchText);
                         searchView.setVisibility(EditText.VISIBLE);
                         break;
                     case 2:
                         getSupportActionBar().setTitle("Saved");
-                        searchView= findViewById(R.id.searchText);
+                        searchView = findViewById(R.id.searchText);
                         searchView.setVisibility(EditText.GONE);
 
                         break;
@@ -108,12 +115,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -124,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
 
         if (id == R.id.action_aboutus) {
-            Intent intent = new Intent(this,AboutUS.class);
+            Intent intent = new Intent(this, AboutUS.class);
             startActivity(intent);
             return true;
         }

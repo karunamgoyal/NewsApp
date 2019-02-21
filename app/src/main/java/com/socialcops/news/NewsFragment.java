@@ -1,11 +1,18 @@
 package com.socialcops.news;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,12 +33,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 
 public class NewsFragment extends Fragment {
 
-    String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535"; // ### YOUE NEWS API HERE ###
+    String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535";
     ListView listNews;
     String filename="SocialCopsNewsAPP";
     ProgressBar loader;
@@ -94,6 +102,7 @@ public class NewsFragment extends Fragment {
                 Toast.makeText(getContext(), "News Error Sorry For Inconvinience", Toast.LENGTH_LONG).show();
             }
         }
+        scheduleNotification(getContext(),1);
         return v;
     }
 
@@ -167,7 +176,16 @@ public class NewsFragment extends Fragment {
 
 
     }
+    public void scheduleNotification(Context context, int notificationId) {
 
+         Calendar calendar= Calendar.getInstance();
+         calendar.set(Calendar.HOUR_OF_DAY,9);
+         Intent intent =new Intent(getContext(),MyNotificationPublisher.class);
+         PendingIntent pendingIntent=PendingIntent.getBroadcast(getContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+         AlarmManager alarmManager=(AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
+
+    }
 
 
 }

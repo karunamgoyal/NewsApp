@@ -12,7 +12,6 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
 
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbarsearch"
             android:layout_width="match_parent"
@@ -21,25 +20,23 @@
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
 
-                <EditText
-                    android:id="@+id/searchText"
-                    android:layout_width="match_parent"
-                    android:layout_height="38dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="5dp"
+            <EditText
+                android:id="@+id/searchText"
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="5dp"
 
-                    android:background="@drawable/round"
-                    android:inputType="text"
-                    android:textColor="#000"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:drawableLeft="@drawable/ic_search">
-                </EditText>
+                android:background="@drawable/round"
+                android:drawableLeft="@drawable/ic_search"
+                android:inputType="text"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textColor="#000"></EditText>
 
         </android.support.v7.widget.Toolbar>
-
 
 
     </android.support.design.widget.AppBarLayout>

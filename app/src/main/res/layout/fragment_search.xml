@@ -12,14 +12,26 @@
         android:background="#FFFFFF"
         android:divider="#F5F5F5"
         android:dividerHeight="1dp"
-        android:visibility="visible"
-        />
+        android:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/sloader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:clickable="true"
+        android:tooltipText="Filter Search"
+        app:srcCompat="@drawable/ic_filter" />
 
 
 </RelativeLayout>
