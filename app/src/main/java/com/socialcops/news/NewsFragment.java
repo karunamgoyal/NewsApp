@@ -117,7 +117,7 @@ public class NewsFragment extends Fragment {
             String xml = "";
 
             String urlParameters = "";
-            xml = Function.excuteGet("https://newsapi.org/v2/top-headlines?country=in&apiKey="+API_KEY, urlParameters);
+            xml = Function.excuteGet("https://newsapi.org/v2/top-headlines?country="+Variables.COUNTRY+"&apiKey="+API_KEY, urlParameters);
             return  xml;
         }
         @Override

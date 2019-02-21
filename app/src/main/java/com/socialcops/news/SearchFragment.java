@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
@@ -88,7 +89,16 @@ public class SearchFragment extends Fragment {
         } else {
             Variables.SEARCH = "india";
         }
-
+        FloatingActionButton fab = v.findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FilterActivity.class);
+                startActivity(intent);
+                FragmentTransaction ftr = getFragmentManager().beginTransaction();
+                ftr.detach(SearchFragment.this).attach(SearchFragment.this).commit();
+            }
+        });
         searchView.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -192,7 +202,8 @@ public class SearchFragment extends Fragment {
             String xml = "";
 
             String urlParameters = "";
-            xml = Function.excuteGet("https://newsapi.org/v2/everything?q=" + Variables.SEARCH + "&apiKey=" + API_KEY, urlParameters);
+            // https://newsapi.org/v2/everything?q=india&from=&to=&sortBy=&apiKey=7f2dd350357d4a9b90873fc6b07f7535
+            xml = Function.excuteGet("https://newsapi.org/v2/everything?q=" + Variables.SEARCH + "&from=" + Variables.FROM + "&to=" + Variables.TO + "&sortBy=" + Variables.SORT + "&apiKey=" + API_KEY, urlParameters);
             return xml;
         }
 
