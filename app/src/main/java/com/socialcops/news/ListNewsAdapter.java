@@ -68,7 +68,6 @@ class ListNewsAdapter extends BaseAdapter {
             activity.getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
             int wt = displaymetrics.widthPixels;
-
             if(song.get(NewsFragment.KEY_URLTOIMAGE).length() < 5)
             {
                 System.out.println("If  "+song.get(NewsFragment.KEY_URLTOIMAGE));

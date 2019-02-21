@@ -19,6 +19,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,7 +33,12 @@ public class NewsFragment extends Fragment {
 
     String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535"; // ### YOUE NEWS API HERE ###
     ListView listNews;
+    String filename="SocialCopsNewsAPP";
     ProgressBar loader;
+    FileOutputStream outputStream;
+    FileInputStream inputStream;
+    ObjectInputStream objectInputStream;
+    ObjectOutputStream objectOutputStream;
     View v;
     ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
     static final String NEWS_SOURCE="name";
@@ -62,10 +73,27 @@ public class NewsFragment extends Fragment {
         {
             DownloadNews newsTask = new DownloadNews();
             newsTask.execute();
-        }else{
-            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-        }
+        }else {
+            File file = new File(getContext().getFilesDir(), filename);
+            ArrayList<HashMap<String, String>> dataList1 = null;
+            try {
+                inputStream = new FileInputStream(file);
+                objectInputStream = new ObjectInputStream(inputStream);
+                dataList1 = (ArrayList<HashMap<String, String>>) objectInputStream.readObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
+            if (dataList1 != null) {
+                ListNewsAdapter adapter = new ListNewsAdapter(getActivity(), dataList1);
+                listNews.setAdapter(adapter);
+            }
+            else{
+                Toast.makeText(getContext(), "News Error Sorry For Inconvinience", Toast.LENGTH_LONG).show();
+            }
+        }
         return v;
     }
 
@@ -80,7 +108,7 @@ public class NewsFragment extends Fragment {
             String xml = "";
 
             String urlParameters = "";
-            xml = Function.excuteGet("https://newsapi.org/v2/everything?q=india&apiKey="+API_KEY, urlParameters);
+            xml = Function.excuteGet("https://newsapi.org/v2/top-headlines?country=in&apiKey="+API_KEY, urlParameters);
             return  xml;
         }
         @Override
@@ -106,7 +134,15 @@ public class NewsFragment extends Fragment {
                 } catch (JSONException e) {
                     Toast.makeText(getContext(), "Unexpected error", Toast.LENGTH_SHORT).show();
                 }
-
+                File file = new File(getContext().getFilesDir(), filename);
+                try {
+                    outputStream=new FileOutputStream(file);
+                    objectOutputStream=new ObjectOutputStream(outputStream);
+                    objectOutputStream.writeObject(dataList);
+                    outputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 ListNewsAdapter adapter = new ListNewsAdapter(getActivity(), dataList);
                 listNews.setAdapter(adapter);
 
@@ -114,7 +150,11 @@ public class NewsFragment extends Fragment {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
                         Intent i = new Intent(getActivity(),DetailsActivity.class);
-                        i.putExtra("url", dataList.get(+position).get(KEY_URL));
+                        i.putExtra(KEY_URL, dataList.get(+position).get(KEY_URL));
+                        i.putExtra(KEY_AUTHOR, dataList.get(+position).get(KEY_AUTHOR));
+                        i.putExtra(KEY_TITLE, dataList.get(+position).get(KEY_TITLE));
+                        i.putExtra(KEY_DESCRIPTION, dataList.get(+position).get(KEY_DESCRIPTION));
+                        i.putExtra(KEY_PUBLISHEDAT, dataList.get(+position).get(KEY_PUBLISHEDAT));
                         startActivity(i);
                     }
                 });

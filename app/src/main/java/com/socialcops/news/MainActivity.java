@@ -15,7 +15,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-
+    private Toolbar toolbar;
     private TextView mTextMessage;
     private EditText searchView;
     private ViewPager viewPager;
@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
+                    getSupportActionBar().setTitle("Headlines");
                     searchView= findViewById(R.id.searchText);
                     searchView.setVisibility(EditText.GONE);
                     viewPager.setCurrentItem(0);
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     viewPager.setCurrentItem(1);
                     return true;
                 case R.id.navigation_notifications:
+                    getSupportActionBar().setTitle("Saved");
                     searchView= findViewById(R.id.searchText);
                     searchView.setVisibility(EditText.GONE);
                     viewPager.setCurrentItem(2);
@@ -51,8 +53,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar =  findViewById(R.id.toolbarsearch);
+        toolbar =  findViewById(R.id.toolbarsearch);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Headlines");
         searchView= findViewById(R.id.searchText);
         searchView.setVisibility(EditText.GONE);
         mTextMessage = (TextView) findViewById(R.id.message);
@@ -63,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         //Add fragment
         viewPageAdapter.AddFragment(new NewsFragment(),"");
         viewPageAdapter.AddFragment(new SearchFragment(),"");
-        viewPageAdapter.AddFragment(new NewsFragment(),"");
+        viewPageAdapter.AddFragment(new SavedFragment(),"");
         viewPager.setAdapter(viewPageAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 prevMenuItem = navigation.getMenu().getItem(position);
                 switch (position){
                     case 0:
+                        getSupportActionBar().setTitle("Headlines");
                         searchView= findViewById(R.id.searchText);
                         searchView.setVisibility(EditText.GONE);
                         break;
@@ -89,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                         searchView.setVisibility(EditText.VISIBLE);
                         break;
                     case 2:
+                        getSupportActionBar().setTitle("Saved");
                         searchView= findViewById(R.id.searchText);
                         searchView.setVisibility(EditText.GONE);
 
@@ -117,8 +122,10 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
 
+        if (id == R.id.action_aboutus) {
+            Intent intent = new Intent(this,AboutUS.class);
+            startActivity(intent);
             return true;
         }
 

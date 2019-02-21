@@ -1,5 +1,6 @@
 package com.socialcops.news;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Variables {
@@ -8,4 +9,5 @@ public class Variables {
     public static String INTEREST;
     public static String SOURCE;
     public static String SEARCH;
+    public static ArrayList<HashMap<String,String>> Saved=new ArrayList<>();
 }
