@@ -36,7 +36,7 @@ public class SavedFragment extends Fragment {
 
     String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535";
     ListView listNews;
-    String filename="SocialCopsNewsAPPSaved";
+    String filename = "SocialCopsNewsAPPSaved";
     TextView loader;
     FileOutputStream outputStream;
     FileInputStream inputStream;
@@ -44,13 +44,14 @@ public class SavedFragment extends Fragment {
     ObjectOutputStream objectOutputStream;
     View v;
     ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
-    static final String NEWS_SOURCE="name";
+    static final String NEWS_SOURCE = "name";
     static final String KEY_AUTHOR = "author";
     static final String KEY_TITLE = "title";
     static final String KEY_DESCRIPTION = "description";
     static final String KEY_URL = "url";
     static final String KEY_URLTOIMAGE = "urlToImage";
     static final String KEY_PUBLISHEDAT = "publishedAt";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -67,29 +68,28 @@ public class SavedFragment extends Fragment {
         listNews = (ListView) v.findViewById(R.id.SavedNews);
         loader = (TextView) v.findViewById(R.id.snloader);
         listNews.setEmptyView(loader);
-            File file = new File(getContext().getFilesDir(), filename);
+        File file = new File(getContext().getFilesDir(), filename);
 
-            try {
-                inputStream = new FileInputStream(file);
-                objectInputStream = new ObjectInputStream(inputStream);
-                Variables.Saved = (ArrayList<HashMap<String, String>>) objectInputStream.readObject();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+        try {
+            inputStream = new FileInputStream(file);
+            objectInputStream = new ObjectInputStream(inputStream);
+            Variables.Saved = (ArrayList<HashMap<String, String>>) objectInputStream.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-            if (Variables.Saved != null&&!Variables.Saved.isEmpty()) {
-                SavedNewsAdapter adapter = new SavedNewsAdapter(getActivity(), Variables.Saved);
-                listNews.setAdapter(adapter);
-            }
-            else{
-                Toast.makeText(getContext(), "No Saved News", Toast.LENGTH_LONG).show();
-            }
-            listNews.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        if (Variables.Saved != null && !Variables.Saved.isEmpty()) {
+            SavedNewsAdapter adapter = new SavedNewsAdapter(getActivity(), Variables.Saved);
+            listNews.setAdapter(adapter);
+        } else {
+            Toast.makeText(getContext(), "No Saved News", Toast.LENGTH_LONG).show();
+        }
+        listNews.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Intent i = new Intent(getActivity(),DetailsActivity.class);
+                Intent i = new Intent(getActivity(), DetailsActivity.class);
                 i.putExtra(KEY_URL, Variables.Saved.get(+position).get(KEY_URL));
                 i.putExtra(KEY_AUTHOR, Variables.Saved.get(+position).get(KEY_AUTHOR));
                 i.putExtra(KEY_TITLE, Variables.Saved.get(+position).get(KEY_TITLE));
@@ -98,15 +98,15 @@ public class SavedFragment extends Fragment {
                 startActivity(i);
             }
         });
-        FloatingActionButton fab=v.findViewById(R.id.fab);
+        FloatingActionButton fab = v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 File file = new File(getContext().getFilesDir(), filename);
                 try {
                     Variables.Saved.clear();
-                    outputStream=new FileOutputStream(file);
-                    objectOutputStream=new ObjectOutputStream(outputStream);
+                    outputStream = new FileOutputStream(file);
+                    objectOutputStream = new ObjectOutputStream(outputStream);
                     objectOutputStream.writeObject(Variables.Saved);
                     outputStream.close();
                     FragmentTransaction ftr = getFragmentManager().beginTransaction();

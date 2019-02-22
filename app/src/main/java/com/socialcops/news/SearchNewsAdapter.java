@@ -24,17 +24,21 @@ class SearchNewsAdapter extends BaseAdapter {
 
     public SearchNewsAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
         activity = a;
-        data=d;
+        data = d;
     }
+
     public int getCount() {
         return data.size();
     }
+
     public Object getItem(int position) {
         return position;
     }
+
     public long getItemId(int position) {
         return position;
     }
+
     public View getView(int position, View convertView, ViewGroup parent) {
         SearchNewsViewHolder holder = null;
         if (convertView == null) {
@@ -59,8 +63,8 @@ class SearchNewsAdapter extends BaseAdapter {
         HashMap<String, String> song;
         song = data.get(position);
 
-        try{
-            String arr[]=song.get(SearchFragment.KEY_PUBLISHEDAT).split("T");
+        try {
+            String arr[] = song.get(SearchFragment.KEY_PUBLISHEDAT).split("T");
             holder.title.setText(song.get(SearchFragment.KEY_TITLE));
             holder.time.setText(arr[0]);
             // holder.time.setText(song.get(SearchFragment.NEWS_SOURCE));
@@ -69,20 +73,19 @@ class SearchNewsAdapter extends BaseAdapter {
 
             int wt = displaymetrics.widthPixels;
 
-            if(song.get(SearchFragment.KEY_URLTOIMAGE).length() < 5)
-            {
-                System.out.println("If  "+song.get(SearchFragment.KEY_URLTOIMAGE));
+            if (song.get(SearchFragment.KEY_URLTOIMAGE).length() < 5) {
+                System.out.println("If  " + song.get(SearchFragment.KEY_URLTOIMAGE));
                 holder.galleryImage.setVisibility(View.GONE);
-            }else{
+            } else {
                 System.out.println(song.get(SearchFragment.KEY_URLTOIMAGE));
                 Picasso.with(activity)
                         .load(song.get(SearchFragment.KEY_URLTOIMAGE))
                         .centerCrop()
-                        .resize(wt-32, 315)
+                        .resize(wt - 32, 315)
                         .into(holder.galleryImage);
             }
-        }catch(Exception e) {
-            System.out.println("Hello   "+song.get(SearchFragment.KEY_URLTOIMAGE));
+        } catch (Exception e) {
+            System.out.println("Hello   " + song.get(SearchFragment.KEY_URLTOIMAGE));
         }
         return convertView;
     }
@@ -90,6 +93,6 @@ class SearchNewsAdapter extends BaseAdapter {
 
 class SearchNewsViewHolder {
     ImageView galleryImage;
-    TextView  title, time,source;
+    TextView title, time, source;
 
 }

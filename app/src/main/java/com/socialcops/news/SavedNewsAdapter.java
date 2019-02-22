@@ -24,17 +24,21 @@ class SavedNewsAdapter extends BaseAdapter {
 
     public SavedNewsAdapter(Activity a, ArrayList<HashMap<String, String>> d) {
         activity = a;
-        data=d;
+        data = d;
     }
+
     public int getCount() {
         return data.size();
     }
+
     public Object getItem(int position) {
         return position;
     }
+
     public long getItemId(int position) {
         return position;
     }
+
     public View getView(int position, View convertView, ViewGroup parent) {
         SavedNewsViewHolder holder = null;
         if (convertView == null) {
@@ -57,18 +61,18 @@ class SavedNewsAdapter extends BaseAdapter {
         HashMap<String, String> song;
         song = data.get(position);
 
-        try{
-            String arr[]=song.get(NewsFragment.KEY_PUBLISHEDAT).split("T");
+        try {
+            String arr[] = song.get(NewsFragment.KEY_PUBLISHEDAT).split("T");
             holder.title.setText(song.get(NewsFragment.KEY_TITLE));
             holder.time.setText(arr[0]);
-        }catch(Exception e) {
-            System.out.println("Hello   "+song.get(NewsFragment.KEY_URLTOIMAGE));
+        } catch (Exception e) {
+            System.out.println("Hello   " + song.get(NewsFragment.KEY_URLTOIMAGE));
         }
         return convertView;
     }
 }
 
 class SavedNewsViewHolder {
-    TextView  title, time,source;
+    TextView title, time, source;
 
 }

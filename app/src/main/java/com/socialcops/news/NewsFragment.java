@@ -41,7 +41,7 @@ public class NewsFragment extends Fragment {
 
     String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535";
     ListView listNews;
-    String filename="SocialCopsNewsAPP";
+    String filename = "SocialCopsNewsAPP";
     ProgressBar loader;
     FileOutputStream outputStream;
     FileInputStream inputStream;
@@ -49,13 +49,14 @@ public class NewsFragment extends Fragment {
     ObjectOutputStream objectOutputStream;
     View v;
     ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
-    static final String NEWS_SOURCE="name";
+    static final String NEWS_SOURCE = "name";
     static final String KEY_AUTHOR = "author";
     static final String KEY_TITLE = "title";
     static final String KEY_DESCRIPTION = "description";
     static final String KEY_URL = "url";
     static final String KEY_URLTOIMAGE = "urlToImage";
     static final String KEY_PUBLISHEDAT = "publishedAt";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
@@ -77,11 +78,10 @@ public class NewsFragment extends Fragment {
 //
 
 
-        if(Function.isNetworkAvailable(container.getContext()))
-        {
+        if (Function.isNetworkAvailable(container.getContext())) {
             DownloadNews newsTask = new DownloadNews();
             newsTask.execute();
-        }else {
+        } else {
             File file = new File(getContext().getFilesDir(), filename);
             ArrayList<HashMap<String, String>> dataList1 = null;
             try {
@@ -97,12 +97,11 @@ public class NewsFragment extends Fragment {
             if (dataList1 != null) {
                 ListNewsAdapter adapter = new ListNewsAdapter(getActivity(), dataList1);
                 listNews.setAdapter(adapter);
-            }
-            else{
+            } else {
                 Toast.makeText(getContext(), "News Error Sorry For Inconvinience", Toast.LENGTH_LONG).show();
             }
         }
-        scheduleNotification(getContext(),1);
+
         return v;
     }
 
@@ -113,17 +112,19 @@ public class NewsFragment extends Fragment {
             super.onPreExecute();
 
         }
+
         protected String doInBackground(String... args) {
             String xml = "";
 
             String urlParameters = "";
-            xml = Function.excuteGet("https://newsapi.org/v2/top-headlines?country="+Variables.COUNTRY+"&apiKey="+API_KEY, urlParameters);
-            return  xml;
+            xml = Function.excuteGet("https://newsapi.org/v2/top-headlines?country=" + Variables.COUNTRY + "&apiKey=" + API_KEY, urlParameters);
+            return xml;
         }
+
         @Override
         protected void onPostExecute(String xml) {
 
-            if(xml.length()>10){ // Just checking if not empty
+            if (xml.length() > 10) { // Just checking if not empty
 
                 try {
                     JSONObject jsonResponse = new JSONObject(xml);
@@ -145,8 +146,8 @@ public class NewsFragment extends Fragment {
                 }
                 File file = new File(getContext().getFilesDir(), filename);
                 try {
-                    outputStream=new FileOutputStream(file);
-                    objectOutputStream=new ObjectOutputStream(outputStream);
+                    outputStream = new FileOutputStream(file);
+                    objectOutputStream = new ObjectOutputStream(outputStream);
                     objectOutputStream.writeObject(dataList);
                     outputStream.close();
                 } catch (Exception e) {
@@ -158,7 +159,7 @@ public class NewsFragment extends Fragment {
                 listNews.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
-                        Intent i = new Intent(getActivity(),DetailsActivity.class);
+                        Intent i = new Intent(getActivity(), DetailsActivity.class);
                         i.putExtra(KEY_URL, dataList.get(+position).get(KEY_URL));
                         i.putExtra(KEY_AUTHOR, dataList.get(+position).get(KEY_AUTHOR));
                         i.putExtra(KEY_TITLE, dataList.get(+position).get(KEY_TITLE));
@@ -168,22 +169,11 @@ public class NewsFragment extends Fragment {
                     }
                 });
 
-            }else{
+            } else {
                 Toast.makeText(getContext(), "No news found", Toast.LENGTH_SHORT).show();
             }
         }
 
-
-
-    }
-    public void scheduleNotification(Context context, int notificationId) {
-
-         Calendar calendar= Calendar.getInstance();
-         calendar.set(Calendar.HOUR_OF_DAY,9);
-         Intent intent =new Intent(getContext(),MyNotificationPublisher.class);
-         PendingIntent pendingIntent=PendingIntent.getBroadcast(getContext(),100,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-         AlarmManager alarmManager=(AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pendingIntent);
 
     }
 

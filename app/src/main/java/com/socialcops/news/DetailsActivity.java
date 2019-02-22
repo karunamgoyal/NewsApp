@@ -1,4 +1,5 @@
 package com.socialcops.news;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -35,16 +36,17 @@ public class DetailsActivity extends AppCompatActivity {
     String description = "";
     String author = "";
     String publishedat = "";
-    String filename="SocialCopsNewsAPPSaved";
+    String filename = "SocialCopsNewsAPPSaved";
     FileOutputStream outputStream;
     FileInputStream inputStream;
     ObjectInputStream objectInputStream;
     ObjectOutputStream objectOutputStream;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
-        Toolbar toolbar=findViewById(R.id.toolbardetail);
+        Toolbar toolbar = findViewById(R.id.toolbardetail);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
@@ -75,17 +77,20 @@ public class DetailsActivity extends AppCompatActivity {
         });
 
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.share, menu);
 
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Take appropriate action for each action item click
@@ -100,17 +105,17 @@ public class DetailsActivity extends AppCompatActivity {
                 return true;
             case R.id.action_star:
                 // location found
-                HashMap<String,String> map = new HashMap<>();
-                map.put(KEY_URL,url);
-                map.put(KEY_AUTHOR,author);
-                map.put(KEY_DESCRIPTION,description);
-                map.put(KEY_PUBLISHEDAT,publishedat);
-                map.put(KEY_TITLE,title);
+                HashMap<String, String> map = new HashMap<>();
+                map.put(KEY_URL, url);
+                map.put(KEY_AUTHOR, author);
+                map.put(KEY_DESCRIPTION, description);
+                map.put(KEY_PUBLISHEDAT, publishedat);
+                map.put(KEY_TITLE, title);
                 Variables.Saved.add(map);
                 File file = new File(getFilesDir(), filename);
                 try {
-                    outputStream=new FileOutputStream(file);
-                    objectOutputStream=new ObjectOutputStream(outputStream);
+                    outputStream = new FileOutputStream(file);
+                    objectOutputStream = new ObjectOutputStream(outputStream);
                     objectOutputStream.writeObject(Variables.Saved);
                     outputStream.close();
                 } catch (Exception e) {

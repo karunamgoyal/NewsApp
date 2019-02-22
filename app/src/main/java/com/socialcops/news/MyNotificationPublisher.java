@@ -27,7 +27,7 @@ import static android.app.NotificationManager.IMPORTANCE_DEFAULT;
 
 public class MyNotificationPublisher extends BroadcastReceiver {
     ListView listNews;
-    String filename="SocialCopsNewsAPP";
+    String filename = "SocialCopsNewsAPP";
     ProgressBar loader;
     FileOutputStream outputStream;
     FileInputStream inputStream;
@@ -35,7 +35,7 @@ public class MyNotificationPublisher extends BroadcastReceiver {
     ObjectOutputStream objectOutputStream;
     View v;
     ArrayList<HashMap<String, String>> dataList = new ArrayList<HashMap<String, String>>();
-    static final String NEWS_SOURCE="name";
+    static final String NEWS_SOURCE = "name";
     static final String KEY_AUTHOR = "author";
     static final String KEY_TITLE = "title";
     static final String KEY_DESCRIPTION = "description";
@@ -43,9 +43,10 @@ public class MyNotificationPublisher extends BroadcastReceiver {
     static final String KEY_URLTOIMAGE = "urlToImage";
     static final String KEY_PUBLISHEDAT = "publishedAt";
     private static final String CHANNEL_ID = "com.socialcops.news.channelId";
+
     @Override
     public void onReceive(final Context context, Intent intent) {
-         File file = new File(context.getFilesDir(), filename);
+        File file = new File(context.getFilesDir(), filename);
         ArrayList<HashMap<String, String>> dataList1 = null;
         try {
             inputStream = new FileInputStream(file);
@@ -57,12 +58,12 @@ public class MyNotificationPublisher extends BroadcastReceiver {
             e.printStackTrace();
         }
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent intent1 = new Intent(context,MainActivity.class);
+        Intent intent1 = new Intent(context, MainActivity.class);
         intent1.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent=PendingIntent.getActivity(context,100,intent1,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 100, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.news)
+                .setSmallIcon(R.drawable.icon1)
                 .setContentTitle(dataList1.get(0).get(KEY_TITLE))
                 .setContentText(dataList1.get(0).get(KEY_DESCRIPTION))
                 .setStyle(new NotificationCompat.BigTextStyle()
@@ -81,6 +82,6 @@ public class MyNotificationPublisher extends BroadcastReceiver {
             );
             notificationManager.createNotificationChannel(channel);
         }
-        notificationManager.notify(100,builder.build());
+        notificationManager.notify(100, builder.build());
     }
 }

@@ -38,7 +38,7 @@ import java.util.HashMap;
 
 public class SearchFragment extends Fragment {
 
-    String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535"; // ### YOUE NEWS API HERE ###
+    String API_KEY = "7f2dd350357d4a9b90873fc6b07f7535";
     ListView listNews;
     ProgressBar loader;
     EditText searchView;
@@ -117,7 +117,6 @@ public class SearchFragment extends Fragment {
                                     s1 = s1 + "+" + x;
                             }
                             Variables.SEARCH = s1;
-                            System.out.println("Thisis line under this");
                         } else {
                             Variables.SEARCH = "india";
                         }
@@ -204,6 +203,7 @@ public class SearchFragment extends Fragment {
             String urlParameters = "";
             // https://newsapi.org/v2/everything?q=india&from=&to=&sortBy=&apiKey=7f2dd350357d4a9b90873fc6b07f7535
             xml = Function.excuteGet("https://newsapi.org/v2/everything?q=" + Variables.SEARCH + "&from=" + Variables.FROM + "&to=" + Variables.TO + "&sortBy=" + Variables.SORT + "&apiKey=" + API_KEY, urlParameters);
+            System.out.println("Hello THIS is " + Variables.SEARCH + " " + Variables.FROM + " " + Variables.TO + " " + Variables.SORT);
             return xml;
         }
 
