@@ -43,7 +43,9 @@ public class FilterActivity extends AppCompatActivity implements View.OnClickLis
                                     .getText().toString();
                     if (value != null && !value.equals(""))
                         Variables.SORT = value;
-
+                } catch (Exception e) {
+                }
+                try {
                     if (!from.getText().toString().equals("From")) {
                         Variables.FROM = from.getText().toString();
                     }
