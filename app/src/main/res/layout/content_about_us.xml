@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="22dp"
         android:layout_marginBottom="56dp"
-        android:text="Made With Love For SocialCops"
+        android:text="Made With Love"
         android:textColor="#000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
